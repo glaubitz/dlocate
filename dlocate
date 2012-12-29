@@ -217,7 +217,7 @@ PKGS_REGEXP=$(echo "$PKGS" | sed -e "s/$SEPARATOR/$RE_SEPARATOR/g")
 FILES_REGEXP="($PKGS_REGEXP)"
 [ "$WORD_RE" = "-w" ] && FILES_REGEXP="\b$FILES_REGEXP\b"
 
-PKGS=$(echo "$PKGS" | sed -e "s/$SEPARATOR/ /")
+PKGS=$(echo "$PKGS" | sed -e "s/$SEPARATOR/ /g")
 
 if [ "$VERBOSE" = "1" ] ; then
     echo "PKGS:" $PKGS
