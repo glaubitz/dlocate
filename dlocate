@@ -275,7 +275,8 @@ elif [ "$OPTION" = '-S' ] ; then
         exit 1
     fi
     PREFIX="^([-a-zA-Z0-9_.+]+:|diversion by )"
-    [ "$RE_TYPE" = "-G" ] && PREFIX="^([-a-zA-Z0-9_.+]+:\|diversion by )"
+    [ "$RE_TYPE" = "-G" ] && PREFIX="^\([-a-zA-Z0-9_.+]\+:\|diversion by \)" && \
+                             FILES_REGEXP=$(echo "$FILES_REGEXP" | sed 's/(/\\(/g;s/)/\\)/g')
 
     [ "$VERBOSE" = "1" ] && echo RUNNING: $GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX.*$FILES_REGEXP" "$DLOCATEDB"
     $GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX.*$FILES_REGEXP" "$DLOCATEDB" | output_filter
