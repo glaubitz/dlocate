@@ -11,9 +11,9 @@ dlocate - program to view debian package information
 .RI [ OPTIONS ]
 .RI [ command ]
 .RB [ 
-.IR package .\|.\|.
-|
-.IR PATTERN .\|.\|.]
+.IR package .\|.\|.\ |
+.IR PATTERN .\|.\|.\ |
+.IR STRING \ ]
 .
 
 .SH "DESCRIPTION"
@@ -45,6 +45,14 @@ Fixed String searches are incompatible with \-S.
 For example, to search for `/usr/bin/[', you need to type:
 
 \fBdlocate  '/usr/bin/\\['\fP
+
+.TP
+.BR \-e
+List all records where the filename matches
+.IR STRING
+exactly.
+
+NOTE: Regular expressions are incompatible with \-e.
 
 .TP
 .BR \-l

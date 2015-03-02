@@ -29,6 +29,7 @@ Usage: dlocate [option...] [command] [PATTERN...]
 Commands:
   DEFAULT/none PATTERN   list records that match either package or files names
   -S           PATTERN   list records that match filenames
+  -e           STRING    list records that match exact filename
 
   -L           package   list all files in package
   -l           package   regexp-enhanced emulation of 'dpkg -l'
@@ -156,7 +157,7 @@ for p in "$@"; do
                 PKGS="dummy"
             ;;
 
-        ('-S'|'-L'|'-l'|'-s'|'-ls'|'-du'|'-conf'|'-lsconf'|'-md5sum'|'-md5check'|'-man'|'-lsman'|'-lsbin')
+        ('-e'|'-S'|'-L'|'-l'|'-s'|'-ls'|'-du'|'-conf'|'-lsconf'|'-md5sum'|'-md5check'|'-man'|'-lsman'|'-lsbin')
                 OPTION="$p"
             ;;
 
@@ -266,6 +267,20 @@ if [ "$OPTION" = '-l' ] ; then
           )
 
     [ -n "$BODY" ] && echo -e "$HEADER\n$BODY"
+
+elif [ "$OPTION" = '-e' ]; then
+
+    if [[ "$@" =~ (-E|-F|-G|-i|-P|-w|--fixed-strings|--ignore-case|--[a-z]+regexp) ]]; then
+        echo "ERROR: -e exact string searches are incompatible with regular expression options" >&2
+        echo >&2
+        exit 1
+    fi
+
+    PREFIX="(^[-a-zA-Z0-9_.+]+| (to|from)):"
+
+    [ "$VERBOSE" = "1" ] && echo RUNNING: $GREP $RE_TYPE -- "$PREFIX $FILES_REGEXP$" "$DLOCATEDB"
+    $GREP $RE_TYPE -- "$PREFIX $FILES_REGEXP$" "$DLOCATEDB" | output_filter
+    result=${PIPESTATUS[0]}
 
 elif [ "$OPTION" = '-S' ] ; then
 
