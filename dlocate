@@ -283,8 +283,8 @@ elif [ "$OPTION" = '-S' ] ; then
 
 elif [ "$OPTION" = 'DEFAULT' ] ; then
 
-    [ "$VERBOSE" = "1" ] && echo RUNNING: $GREP $RE_TYPE $IGNORE_CASE -- $WORD_RE "$PKGS_REGEXP" "$DLOCATEDB"
-    $GREP $RE_TYPE $IGNORE_CASE -- $WORD_RE "$PKGS_REGEXP" "$DLOCATEDB" | output_filter
+    [ "$VERBOSE" = "1" ] && echo RUNNING: $GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- "$PKGS_REGEXP" "$DLOCATEDB"
+    $GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- "$PKGS_REGEXP" "$DLOCATEDB" | output_filter
     result=${PIPESTATUS[0]}
 
 elif [ "$OPTION" = '-s' ] ; then
