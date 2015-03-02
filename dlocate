@@ -304,7 +304,12 @@ elif [ "$OPTION" = 'DEFAULT' ] ; then
     result=${PIPESTATUS[0]}
 
 elif [ "$OPTION" = '-s' ] ; then
-    DCTRL_REGEXP="^($PKGS_REGEXP)$"
+    
+    if [[ $DCTRL_RE_TYPE = '-r' ]]; then
+        DCTRL_REGEXP="^\($PKGS_REGEXP\)$"
+    else
+        DCTRL_REGEXP="^($PKGS_REGEXP)$"
+    fi
 
     [ "$VERBOSE" = "1" ] && echo RUNNING: grep-dctrl -X -P $DCTRL_RE_TYPE $DCTRL_REGEXP /var/lib/dpkg/status 
     grep-dctrl -P $DCTRL_RE_TYPE $DCTRL_REGEXP /var/lib/dpkg/status 
