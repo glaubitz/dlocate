@@ -369,18 +369,9 @@ elif [[ $OPTION = '-s' ]]; then
         DCTRL_REGEXP="^($PKGS_REGEXP)$"
     fi
 
-<<<<<<< HEAD
-elif [ "$OPTION" = '-s' ] ; then
-    
-    if [[ $DCTRL_RE_TYPE = '-r' ]]; then
-        DCTRL_REGEXP="^\($PKGS_REGEXP\)$"
-    else
-        DCTRL_REGEXP="^($PKGS_REGEXP)$"
-    fi
-=======
     [[ $VERBOSE -eq 1 ]] && running "grep-dctrl -P $DCTRL_RE_TYPE \"$DCTRL_REGEXP\" /var/lib/dpkg/status"
     grep-dctrl -P $DCTRL_RE_TYPE "$DCTRL_REGEXP" /var/lib/dpkg/status
->>>>>>> cleanup
+
 
     result=$?
 
