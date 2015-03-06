@@ -276,8 +276,13 @@ fi
 
 if [[ $OPTION = 'DEFAULT' ]]; then
 
-    [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- \"$PKGS_REGEXP\" \"$DLOCATEDB\""
-    $GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- "$PKGS_REGEXP" "$DLOCATEDB" | output_filter
+    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- \"$PKGS_REGEXP\" \"$DLOCATEDB\""
+    # $GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- "$PKGS_REGEXP" "$DLOCATEDB" | output_filter
+
+    COMMAND='$GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- "$PKGS_REGEXP" "$DLOCATEDB"'
+
+    [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
+    eval "$COMMAND" | output_filter
 
     result=${PIPESTATUS[0]}
 
@@ -289,8 +294,13 @@ elif [[ $OPTION = '-e' ]]; then
 
     PREFIX="(^[-a-zA-Z0-9_.+]+| (to|from)):"
 
-    [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE -- \"$PREFIX ${FILES_REGEXP}$\" \"$DLOCATEDB\""
-    $GREP $RE_TYPE -- "$PREFIX ${FILES_REGEXP}$" "$DLOCATEDB" | output_filter
+    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE -- \"$PREFIX ${FILES_REGEXP}$\" \"$DLOCATEDB\""
+    # $GREP $RE_TYPE -- "$PREFIX ${FILES_REGEXP}$" "$DLOCATEDB" | output_filter
+
+    COMMAND='$GREP $RE_TYPE -- "$PREFIX ${FILES_REGEXP}$" "$DLOCATEDB"'
+
+    [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
+    eval "$COMMAND" | output_filter
 
     result=${PIPESTATUS[0]}
 
@@ -306,8 +316,13 @@ elif [[ $OPTION = '-K' ]]; then
 
     KERN_RE=$(dlocate -k | paste -sd '|')
 
-    [[ $VERBOSE -eq 1 ]] && running "dlocate -P -l \s($KERN_RE)\s"
-    dlocate -P -l "\s($KERN_RE)\s"
+    # [[ $VERBOSE -eq 1 ]] && running "dlocate -P -l \s($KERN_RE)\s"
+    # dlocate -P -l "\s($KERN_RE)\s"
+
+    COMMAND='dlocate -P -l "\s($KERN_RE)\s"'
+
+    [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
+    eval "$COMMAND"
 
     result=$?
 
@@ -339,11 +354,19 @@ elif [[ $OPTION = '-l' ]]; then
 
     body_formatted="%-2s  %-${width}.${width}s %-${width}.${width}s %-${depth}.${depth}s\\n"
 
-    [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- $PKGS_REGEXP $DPKGLIST"
+    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- $PKGS_REGEXP $DPKGLIST"
 
-    body=$($GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- "$PKGS_REGEXP" "$DPKGLIST" | \
+    # body=$($GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- "$PKGS_REGEXP" "$DPKGLIST" | \
+    #        awk -F'\t' "{ printf \"$body_formatted\", \$1, \$2, \$3, \$4 }" |
+    #        sed -e 's/ *$//g')
+
+    COMMAND='$GREP $RE_TYPE $WORD_RE $IGNORE_CASE -- "$PKGS_REGEXP" "$DPKGLIST"'
+
+    [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
+    body=$(eval "$COMMAND" | \
            awk -F'\t' "{ printf \"$body_formatted\", \$1, \$2, \$3, \$4 }" |
            sed -e 's/ *$//g')
+
 
     [[ -n $body ]] && echo -e "${header}\n${body}"
 
@@ -360,8 +383,13 @@ elif [[ $OPTION = '-p' ]]; then
                              POSTFIX="\( \(from\|to\)\)\?: " && \
                              FILES_REGEXP=$(sed 's/(/\\(/g;s/)/\\)/g' <<<"$FILES_REGEXP")
 
-    [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"${PREFIX}${FILES_REGEXP}${POSTFIX}\" \"$DLOCATEDB\""
-    $GREP $RE_TYPE $IGNORE_CASE -- "${PREFIX}${FILES_REGEXP}${POSTFIX}" "$DLOCATEDB" | output_filter
+    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"${PREFIX}${FILES_REGEXP}${POSTFIX}\" \"$DLOCATEDB\""
+    # $GREP $RE_TYPE $IGNORE_CASE -- "${PREFIX}${FILES_REGEXP}${POSTFIX}" "$DLOCATEDB" | output_filter
+
+    COMMAND='$GREP $RE_TYPE $IGNORE_CASE -- "${PREFIX}${FILES_REGEXP}${POSTFIX}" "$DLOCATEDB"'
+
+    [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
+    eval "$COMMAND" | output_filter
 
     result=${PIPESTATUS[0]}
 
@@ -373,8 +401,13 @@ elif [[ $OPTION = '-s' ]]; then
         DCTRL_REGEXP="^($PKGS_REGEXP)$"
     fi
 
-    [[ $VERBOSE -eq 1 ]] && running "grep-dctrl -P $DCTRL_RE_TYPE \"$DCTRL_REGEXP\" /var/lib/dpkg/status"
-    grep-dctrl -P $DCTRL_RE_TYPE "$DCTRL_REGEXP" /var/lib/dpkg/status
+    # [[ $VERBOSE -eq 1 ]] && running "grep-dctrl -P $DCTRL_RE_TYPE \"$DCTRL_REGEXP\" /var/lib/dpkg/status"
+    # grep-dctrl -P $DCTRL_RE_TYPE "$DCTRL_REGEXP" /var/lib/dpkg/status
+
+    COMMAND='grep-dctrl -P $DCTRL_RE_TYPE "$DCTRL_REGEXP" /var/lib/dpkg/status'
+
+    [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
+    eval "$COMMAND"
 
     result=$?
 
@@ -389,8 +422,13 @@ elif [[ $OPTION = '-S' ]]; then
     [[ $RE_TYPE = '-G' ]] && PREFIX="\(^[-a-zA-Z0-9_.+]\+\| \(to\|from\)\):" && \
                              FILES_REGEXP=$(sed 's/(/\\(/g;s/)/\\)/g' <<<"$FILES_REGEXP")
 
-    [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"$PREFIX .*$FILES_REGEXP\" \"$DLOCATEDB\""
-    $GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX .*$FILES_REGEXP" "$DLOCATEDB" | output_filter
+    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"$PREFIX .*$FILES_REGEXP\" \"$DLOCATEDB\""
+    # $GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX .*$FILES_REGEXP" "$DLOCATEDB" | output_filter
+
+    COMMAND='$GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX .*$FILES_REGEXP" "$DLOCATEDB"'
+
+    [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
+    eval "$COMMAND" | output_filter
 
     result=${PIPESTATUS[0]}
 
