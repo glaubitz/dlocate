@@ -168,9 +168,13 @@ parse(){
                     VERBOSE='1'
                     ;;
 
-                '-K'|'-k')
+                '-e')
                     OPTION="$argument"
-                    PKGS='dummy'
+                    OUTPUT_FILTER=packages
+                    ;;
+
+                '-k'|'-K')
+                    OPTION="$argument"
                     ;;
 
                 '-conf'|'-du'|'-e'|'-f'|'-l'|'-L'|'-ls'|'-lsbin'|'-lsconf'|'-lsman'|'-man'|'-md5check'|'-md5sum'|'-s'|'-S')
@@ -255,7 +259,7 @@ config
 parse "$@"
 
 # show help if package list is empty
-(( ${#PKGS[@]} == 0 )) && dlocate_help
+(( ${#PKGS[@]} == 0 )) && ! [[ $OPTION =~ ^-(k|K)$ ]] && dlocate_help
 
 # compose a regex string from PKGS
 PKGS_REGEXP=$(sed "s/ /$RE_SEPARATOR/g" <<<"${PKGS[@]}")
@@ -300,7 +304,7 @@ elif [[ $OPTION = '-k' ]]; then
 
 elif [[ $OPTION = '-K' ]]; then
 
-    KERN_RE=$(dlocate -k | xargs | sed 's/ /|/g')
+    KERN_RE=$(dlocate -k | paste -sd '|')
 
     [[ $VERBOSE -eq 1 ]] && running "dlocate -P -l \s($KERN_RE)\s"
     dlocate -P -l "\s($KERN_RE)\s"
