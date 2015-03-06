@@ -372,7 +372,6 @@ elif [[ $OPTION = '-s' ]]; then
     [[ $VERBOSE -eq 1 ]] && running "grep-dctrl -P $DCTRL_RE_TYPE \"$DCTRL_REGEXP\" /var/lib/dpkg/status"
     grep-dctrl -P $DCTRL_RE_TYPE "$DCTRL_REGEXP" /var/lib/dpkg/status
 
-
     result=$?
 
 elif [[ $OPTION = '-S' ]]; then
