@@ -14,7 +14,6 @@ dlocate - program to view debian package information
 .IR package .\|.\|.\ |
 .IR PATTERN .\|.\|.\ |
 .IR STRING \ ]
-.
 
 .SH "DESCRIPTION"
 .PP
@@ -34,13 +33,21 @@ For example, to search for `/usr/bin/[', you might try:
 \fBdlocate '/usr/bin/\\['\fP
 or
 \fBdlocate \-F '/usr/bin/['\fP
+
+.TP
+.BR \-p
+List all records where the package name matches
+.IR PATTERN .
+
+Fixed string searches are incompatible with \-p.
+
 .TP
 .BR \-S
 List all records where only the filename matches
 .IR PATTERN .
 
 Note that dlocate uses GNU grep, so normal regexp metacharacters need to be taken into account.
-Fixed String searches are incompatible with \-S.
+Fixed string searches are incompatible with \-S.
 
 For example, to search for `/usr/bin/[', you need to type:
 
@@ -85,14 +92,20 @@ want.
 
 .TP
 .BR \-k
-List package names of installed kernels and all related packages
+List package names of installed kernels and all related packages.
+
 .TP
 .BR \-K
-Detailed list of installed kernels and all related packages
+Detailed list of installed kernels and all related packages.
+
+.TP
+.BR \-f
+List all files in
+.IR package .
 
 .TP
 .BR \-L
-List all files in 
+List all contents of
 .IR package .
 
 .TP
@@ -102,7 +115,7 @@ Print status of
 
 .TP
 .BR \-ls
-`ls \-ldF' of all files in
+`ls \-ldF' of all contents of
 .IR package .
 
 .TP
@@ -117,7 +130,7 @@ List conffiles in
 
 .TP
 .BR \-du
-`du \-sck' of all files in
+`du \-sck' of all contents of
 .IR package .
 
 .TP
@@ -137,22 +150,22 @@ List man pages (if any) in
 
 .TP
 .BR \-lsman
-List full path/filenames of man pages (if any) in
+List full paths of man pages (if any) in
 .IR package .
 
 .TP
 .BR \-lsbin
-List full path/filenames of executable files (if any) in
+List full paths of contents marked executable (if any) in
 .IR package .
 
 .SH OPTIONS
 .TP
 .BR \-\^\-filename\-only
-Only output file names when searching for files
+Only output file names when searching for files.
 
 .TP
 .BR \-\^\-package\-only
-Only output package names when searching for files
+Only output package names when searching for files.
 
 .TP
 .BR \-w ", " \-\^\-word\-regexp
@@ -165,7 +178,8 @@ characters are letters, digits, and the underscore.
 
 .TP
 .BR \-i ", " --ignore-case
-Ignore case distinctions in the PATTERN 
+Ignore case distinctions in the
+.IR PATTERN .
 
 .TP
 .BR \-E ", " \-\^\-extended\-regexp
@@ -204,7 +218,7 @@ Display dlocate's version number and exit.
 
 .TP
 .BR \-v ", " \-\-verbose ", " \-\-debug
-Produce verbose debugging output
+Produce verbose debugging output.
 .PP
 
 .SH FILES
