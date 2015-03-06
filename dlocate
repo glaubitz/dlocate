@@ -164,7 +164,7 @@ parse(){
                     dlocate_version
                     ;;
 
-                '-v'|'--verbose'|'--debug')
+                '-d'|'--debug'|'-v'|'--verbose')
                     VERBOSE='1'
                     ;;
 
