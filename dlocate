@@ -105,9 +105,9 @@ __EOF__
 }
 
 dlocate_error(){
-    echo "dlocate: unknown option '$1'"
-    echo
-    echo "Use: 'dlocate -- $1' if you want to search for '$1'"
+    echo "dlocate: unknown option '$1'" >&2
+    echo >&2
+    echo "Use: 'dlocate -- $1' if you want to search for '$1'" >&2
     exit 1
 }
 
@@ -170,7 +170,7 @@ parse(){
 
                 '-e')
                     OPTION="$argument"
-                    OUTPUT_FILTER=packages
+                    OUTPUT_FILTER='packages'
                     ;;
 
                 '-k'|'-K')
@@ -183,7 +183,7 @@ parse(){
 
                 '-p')
                     OPTION="$argument"
-                    OUTPUT_FILTER=packages
+                    OUTPUT_FILTER='packages'
                     ;;
 
                 '-i'|'--ignore-case')
@@ -198,7 +198,7 @@ parse(){
 
                 '-F'|'--fixed-strings')
                     RE_TYPE='-F'
-                    RE_SEPARATOR="\n"
+                    RE_SEPARATOR='\n'
                     ;;
 
                 '-G'|'--basic-regexp')
@@ -213,7 +213,7 @@ parse(){
                     ;;
 
                 '-w'|'--word-regexp')
-                    WORD_RE="-w"
+                    WORD_RE='-w'
                     ;;
 
                 '--filename-only')
@@ -259,7 +259,7 @@ config
 parse "$@"
 
 # show help if package list is empty
-(( ${#PKGS[@]} == 0 )) && ! [[ $OPTION =~ ^-(k|K)$ ]] && dlocate_help
+(( ${#PKGS[@]} == 0 )) && [[ ! $OPTION =~ ^-(k|K)$ ]] && dlocate_help
 
 # compose a regex string from PKGS
 PKGS_REGEXP=$(sed "s/ /$RE_SEPARATOR/g" <<<"${PKGS[@]}")
@@ -270,9 +270,8 @@ FILES_REGEXP="($PKGS_REGEXP)"
 # match filenames on word boundaries if --word-regexp is enabled
 [[ $WORD_RE = '-w' ]] && FILES_REGEXP="\b$FILES_REGEXP\b"
 
-if [[ $VERBOSE -eq 1 ]]; then
-    verbosity
-fi
+# display execution environment details
+[[ $VERBOSE -eq 1 ]] && verbosity
 
 if [[ $OPTION = 'DEFAULT' ]]; then
 
@@ -292,7 +291,7 @@ elif [[ $OPTION = '-e' ]]; then
         fatal "-e exact string searches are incompatible with regular expression options"
     fi
 
-    PREFIX="(^[-a-zA-Z0-9_.+]+| (to|from)):"
+    PREFIX='(^[-a-zA-Z0-9_.+]+| (to|from)):'
 
     # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE -- \"$PREFIX ${FILES_REGEXP}$\" \"$DLOCATEDB\""
     # $GREP $RE_TYPE -- "$PREFIX ${FILES_REGEXP}$" "$DLOCATEDB" | output_filter
@@ -306,8 +305,8 @@ elif [[ $OPTION = '-e' ]]; then
 
 elif [[ $OPTION = '-k' ]]; then
 
-    grep-status -eP "(^linux-(image|source|headers|doc|debug)|nvidia-kernel-|.*-modules-)" | \
-        grep-dctrl -n -s Package -F status " installed" | \
+    grep-status -eP '(^linux-(image|source|headers|doc|debug)|nvidia-kernel-|.*-modules-)' | \
+        grep-dctrl -n -s Package -F status ' installed' | \
         grep -Ev -- '^(lib|openser|pam|scim|tryton|wims)|-perl'
 
     result=$?
@@ -376,11 +375,11 @@ elif [[ $OPTION = '-p' ]]; then
         fatal "-F Fixed String searches are incompatible with -p"
     fi
 
-    PREFIX="^(diversion by )?"
-    POSTFIX="( (from|to))?: "
+    PREFIX='^(diversion by )?'
+    POSTFIX='( (from|to))?: '
 
-    [[ $RE_TYPE = '-G' ]] && PREFIX="^\(diversion by \)\?" && \
-                             POSTFIX="\( \(from\|to\)\)\?: " && \
+    [[ $RE_TYPE = '-G' ]] && PREFIX='^\(diversion by \)\?' && \
+                             POSTFIX='\( \(from\|to\)\)\?: ' && \
                              FILES_REGEXP=$(sed 's/(/\\(/g;s/)/\\)/g' <<<"$FILES_REGEXP")
 
     # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"${PREFIX}${FILES_REGEXP}${POSTFIX}\" \"$DLOCATEDB\""
@@ -417,9 +416,9 @@ elif [[ $OPTION = '-S' ]]; then
         fatal "-F Fixed String searches are incompatible with -S"
     fi
 
-    PREFIX="(^[-a-zA-Z0-9_.+]+| (to|from)):"
+    PREFIX='(^[-a-zA-Z0-9_.+]+| (to|from)):'
 
-    [[ $RE_TYPE = '-G' ]] && PREFIX="\(^[-a-zA-Z0-9_.+]\+\| \(to\|from\)\):" && \
+    [[ $RE_TYPE = '-G' ]] && PREFIX='\(^[-a-zA-Z0-9_.+]\+\| \(to\|from\)\):' && \
                              FILES_REGEXP=$(sed 's/(/\\(/g;s/)/\\)/g' <<<"$FILES_REGEXP")
 
     # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"$PREFIX .*$FILES_REGEXP\" \"$DLOCATEDB\""
@@ -495,7 +494,7 @@ else
             '-lsbin')
                 if [[ -s $file.list ]]; then
                     while IFS= read -r path; do
-                        if [[ -f "$path" && -x "$path" ]]; then
+                        if [[ -f $path && -x $path ]]; then
                             echo "$path"
                         fi
                     done < <(dlocate -L "$PKG")
@@ -540,9 +539,9 @@ else
 
             '-md5check')
                 if [[ -s $file.md5sums ]]; then
-                    output=$(cd / && md5sum --check $file.md5sums 2>/dev/null)
+                    output=$(cd / && md5sum --check "$file.md5sums" 2>/dev/null)
                     if [[ -n $output ]]; then
-                        output=$(grep -v ": OK" <<<"$output")
+                        output=$(grep -v ': OK' <<<"$output")
                         if [[ -n $output ]]; then
                             echo "$output"
                         else
