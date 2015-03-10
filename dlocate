@@ -224,11 +224,11 @@ parse(){
                     OUTPUT_FILTER='packages'
                     ;;
 
-                (-*)
+                -*)
                     dlocate_error "$argument"
                     ;;
 
-                (*)
+                *)
                     PKGS+=("$argument")
                     ;;
             esac
