@@ -54,7 +54,8 @@ Commands:
   DEFAULT/none PATTERN   list records that match either package or files names
   -p           PATTERN   list records that match packages
   -S           PATTERN   list records that match filenames
-  -e           STRING    list records that match exact filename
+  -e           STRING    list package that file belongs to
+  -o           COMMAND   list package that command belongs to
 
   -f           package   list all files in package
   -L           package   list all contents of package
@@ -168,7 +169,7 @@ parse(){
                     VERBOSE='1'
                     ;;
 
-                '-e')
+                '-e'|'-o')
                     OPTION="$argument"
                     OUTPUT_FILTER='packages'
                     ;;
@@ -261,17 +262,30 @@ parse "$@"
 # show help if package list is empty
 (( ${#PKGS[@]} == 0 )) && [[ ! $OPTION =~ ^-(k|K)$ ]] && dlocate_help
 
-# compose a regex string from PKGS
-PKGS_REGEXP=$(sed "s/ /$RE_SEPARATOR/g" <<<"${PKGS[@]}")
-
-# put the package names in a regex group
-FILES_REGEXP="($PKGS_REGEXP)"
-
-# match filenames on word boundaries if --word-regexp is enabled
-[[ $WORD_RE = '-w' ]] && FILES_REGEXP="\b$FILES_REGEXP\b"
-
 # display execution environment details
 [[ $VERBOSE -eq 1 ]] && verbosity
+
+if [[ $OPTION =~ ^(-e|-o)$ ]]; then
+
+    # ensure we're not searching for multiple files or commands
+    if [[ ${#PKGS[@]} > 1 ]]; then
+        fatal "'$OPTION' option only supports queries with one STRING"
+    fi
+
+    SEARCH_STRING=${PKGS[0]}
+
+else
+
+    # compose a regex string from PKGS
+    PKGS_REGEXP=$(sed "s/ /$RE_SEPARATOR/g" <<<"${PKGS[@]}")
+
+    # put the package names in a regex group
+    FILES_REGEXP="($PKGS_REGEXP)"
+
+    # match filenames on word boundaries if --word-regexp is enabled
+    [[ $WORD_RE = '-w' ]] && FILES_REGEXP="\b$FILES_REGEXP\b"
+
+fi
 
 if [[ $OPTION = 'DEFAULT' ]]; then
 
@@ -368,6 +382,29 @@ elif [[ $OPTION = '-l' ]]; then
 
 
     [[ -n $body ]] && echo -e "${header}\n${body}"
+
+elif [[ $OPTION = '-o' ]]; then
+
+    if [[ "$@" =~ (-E|-F|-G|-i|-P|-w|--fixed-strings|--ignore-case|--[a-z]+regexp) ]]; then
+        fatal "-o exact command searches are incompatible with regular expression options"
+    fi
+
+    PREFIX='(^[-a-zA-Z0-9_.+]+| (to|from)):'
+    FULLPATH=$(type -P "${SEARCH_STRING}")
+
+    if [[ -z $FULLPATH ]]; then
+        fatal "'${SEARCH_STRING}' does not appear to be a valid command on the PATH"
+    fi
+
+    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE -- \"$PREFIX ${FULLPATH}$\" \"$DLOCATEDB\""
+    # $GREP $RE_TYPE -- "$PREFIX ${FULLPATH}$" "$DLOCATEDB" | output_filter
+
+    COMMAND='$GREP $RE_TYPE -- "$PREFIX ${FULLPATH}$" "$DLOCATEDB"'
+
+    [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
+    eval "$COMMAND" | output_filter
+
+    result=${PIPESTATUS[0]}
 
 elif [[ $OPTION = '-p' ]]; then
 
