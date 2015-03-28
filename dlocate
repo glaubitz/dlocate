@@ -179,7 +179,7 @@ parse(){
                     OPTION="$argument"
                     ;;
 
-                '-conf'|'-du'|'-e'|'-f'|'-l'|'-L'|'-ls'|'-lsbin'|'-lsconf'|'-lsman'|'-man'|'-md5check'|'-md5sum'|'-s'|'-S')
+                '-conf'|'-du'|'-f'|'-l'|'-L'|'-ls'|'-lsbin'|'-lscmd'|'-lsconf'|'-lsman'|'-man'|'-md5check'|'-md5sum'|'-s'|'-S')
                     OPTION="$argument"
                     ;;
 
