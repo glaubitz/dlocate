@@ -69,9 +69,10 @@ Commands:
   -md5check    package   check package's md5sums (if any)
   -man         package   list package's man pages (if any)
   -lsman       package   list full paths of man pages
-  -lsbin       package   list full paths of contents marked executable
-  -K                     list installed kernel & related packages
-  -k                     detailed list of installed kernel & related packages
+  -lsbin       package   list full paths of executable files
+  -lscmd       package   list full paths of executable files on PATH
+  -k                     list installed kernel & related packages
+  -K                     detailed list of installed kernel & related packages
 
   --                    stop processing commands and options.  remainder of
                         command-line is filename(s)
