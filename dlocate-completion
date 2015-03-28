@@ -12,7 +12,12 @@ _dlocate(){
 
     case "$prev" in
 
-    -S)
+    -o)
+        _command
+        return 0
+        ;;
+
+    -@(e|S))
         _filedir
         return 0
         ;;
