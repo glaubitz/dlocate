@@ -4,35 +4,36 @@
 have dlocate && {
 
 _dlocate(){
-	local cur prev
+    local cur prev
 
-	COMPREPLY=()
-	cur=${COMP_WORDS[COMP_CWORD]}
-	prev=${COMP_WORDS[COMP_CWORD-1]}
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
 
-	case "$prev" in
+    case "$prev" in
 
-	-S)
-		_filedir
-		return 0
-		;;
+    -S)
+        _filedir
+        return 0
+        ;;
 
-	-@(conf|du|f|l|L|ls|lsconf|man|md5check|md5sum|s))
-		COMPREPLY=( $( _xfunc dpkg _comp_dpkg_installed_packages "$cur" ) )
-		return 0
-		;;
+    -@(conf|du|f|l|L|ls|lsbin|lscmd|lsconf|man|md5check|md5sum|s))
+        COMPREPLY=( $( _xfunc dpkg _comp_dpkg_installed_packages "$cur" ) )
+        return 0
+        ;;
 
-	*)
-		optionlist='-conf -d --debug -du -f --filename-only -h -H --help -k -K -l -L -ls -lsbin -lsconf -lsman\
-					-man -md5check -md5sum -p --package-only -s -S -v -V --verbose --version'
-		COMPREPLY=( $( compgen -W '$optionlist' -- "$cur" ) )
-		return 0
-		;;
+    *)
+        optionlist='-conf -d --debug -du -e -f --filename-only -h -H --help -k\
+                   -K -l -L -ls -lsbin -lscmd -lsconf -lsman -man -md5check\
+                   -md5sum -o -p --package-only -s -S -v -V --verbose --version'
+        COMPREPLY=( $( compgen -W "$optionlist" -- "$cur" ) )
+        return 0
+        ;;
 
-	esac
-	
-	# not reached
-	return 0
+    esac
+
+    # not reached
+    return 0
 }
 
 complete -F _dlocate $filenames dlocate
