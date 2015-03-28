@@ -543,6 +543,21 @@ else
                 fi
                 ;;
 
+            '-lscmd')
+                if [[ -s $file.list ]]; then
+                    while IFS= read -r path; do
+                        dirpath=$(dirname "$path")
+                        if [[ -n $dirpath ]] && grep -Eq "(^|:)$dirpath($|:)" <<<"$PATH"; then
+                            echo "$path"
+                        fi
+                    done < <(dlocate -lsbin "$PKG")
+                    result=$?
+                    continue
+                else
+                    error "Package $PKG not installed or $PKG.list is empty."
+                fi
+                ;;
+
             '-lsconf')
                 if [[ -s $file.conffiles ]]; then
                     xargs -- ls -ldF -- < "$file.conffiles"
