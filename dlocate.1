@@ -55,11 +55,15 @@ For example, to search for `/usr/bin/[', you need to type:
 
 .TP
 .BR \-e
-List all records where the filename matches
-.IR STRING
-exactly.
+List package that file belongs to.
 
 NOTE: Regular expressions are incompatible with \-e.
+
+.TP
+.BR \-o
+List package that command belongs to.
+
+NOTE: Regular expressions are incompatible with \-o.
 
 .TP
 .BR \-l
