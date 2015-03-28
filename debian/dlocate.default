@@ -6,4 +6,4 @@
 #
 # disabled by default.
 
-COMPRESS_DLOCATE="0"
+COMPRESS_DLOCATE=0
