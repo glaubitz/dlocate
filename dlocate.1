@@ -272,11 +272,11 @@ To check the md5sums of the dlocate package:
 To use dpkg-repack to make a backup copy of all installed mythtv packages just before
 upgrading them:
 .br
-\fB     dlocate \-l mythtv | grep '^.i' | awk '{print $2}' | xargs dpkg\-repack\fP
+\fB     dlocate \-l mythtv | awk '/^.i/ {print $2}' | xargs dpkg\-repack\fP
 .br
 
 .br
-# dlocate \-l mythtv | grep '^.i' | awk '{print $2}' | xargs dpkg\-repack
+# dlocate \-l mythtv | awk '/^.i/ {print $2}' | xargs dpkg\-repack
 .br
 dpkg-deb: building package `libmythtv-perl' in `./libmythtv-perl_0.21.svn20090414-0.0_amd64.deb'.
 .br
