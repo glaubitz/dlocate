@@ -1,7 +1,7 @@
 # Debian GNU dlocate(1) completion
 #
 
-have dlocate && {
+_have dlocate && {
 
 _dlocate(){
     local cur prev
@@ -10,7 +10,7 @@ _dlocate(){
     cur=${COMP_WORDS[COMP_CWORD]}
     prev=${COMP_WORDS[COMP_CWORD-1]}
 
-    case "$prev" in
+    case $prev in
 
     -o)
         _command
@@ -37,8 +37,6 @@ _dlocate(){
 
     esac
 
-    # not reached
-    return 0
 }
 
 complete -F _dlocate $filenames dlocate
