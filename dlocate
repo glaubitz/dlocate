@@ -479,6 +479,10 @@ else
                     cat "$file.conffiles"
                     result=$?
                     continue
+                elif eval [[ -s $file:*.conffiles ]]; then
+                    cat $file:*.conffiles
+                    result=$?
+                    continue
                 else
                     error "Package $PKG not installed or has no conffiles."
                 fi
@@ -486,8 +490,13 @@ else
 
             '-du')
                 if [[ -s $file.list ]]; then
-                    packages=$(grep -Ev "(@|/)$" <(xargs -r -- ls -1dF -- < "$file.list"))
-                    [[ -n $packages ]] && du -sck "$(xargs "$packages")"
+                    filelist=$(grep -Ev "(@|/)$" <(xargs -r -- ls -1dF -- < "$file.list"))
+                    [[ -n $filelist ]] && du -sck "$(xargs "$filelist")"
+                    result=$?
+                    continue
+                elif eval [[ -s $file:*.list ]]; then
+                    filelist=$(grep -Ev "(@|/)$" <(xargs -r -- ls -1dF -- < $file:*.list))
+                    [[ -n $filelist ]] && du -sck "$(xargs "$filelist")"
                     result=$?
                     continue
                 else
@@ -504,6 +513,14 @@ else
                     done < "$file.list"
                     result=$?
                     continue
+                elif eval [[ -s $file:*.list ]]; then
+                    while IFS= read -r path; do
+                        if [[ -f $path ]]; then
+                            echo "$path"
+                        fi
+                    done < $file:*.list
+                    result=$?
+                    continue
                 else
                     error "Package $PKG not installed or $PKG.list is empty."
                 fi
@@ -512,6 +529,10 @@ else
             '-L')
                 if [[ -s $file.list ]]; then
                     cat "$file.list"
+                    result=$?
+                    continue
+                elif eval [[ -s $file:*.list ]]; then
+                    cat $file:*.list
                     result=$?
                     continue
                 else
@@ -524,13 +545,17 @@ else
                     xargs -r -- ls -ldF -- < "$file.list"
                     result=$?
                     continue
+                elif eval [[ -s $file:*.list ]]; then
+                    xargs -r -- ls -ldF -- < $file:*.list
+                    result=$?
+                    continue
                 else
                     error "Package $PKG not installed or $PKG.list is empty."
                 fi
                 ;;
 
             '-lsbin')
-                if [[ -s $file.list ]]; then
+                if [[ -s $file.list ]] || eval [[ -s $file:*.list ]]; then
                     while IFS= read -r path; do
                         if [[ -f $path && -x $path ]]; then
                             echo "$path"
@@ -544,7 +569,7 @@ else
                 ;;
 
             '-lscmd')
-                if [[ -s $file.list ]]; then
+                if [[ -s $file.list ]] || eval [[ -s $file:*.list ]]; then
                     while IFS= read -r path; do
                         dirpath=$(dirname "$path")
                         if [[ -n $dirpath ]] && grep -Eq "(^|:)$dirpath($|:)" <<<"$PATH"; then
@@ -563,13 +588,17 @@ else
                     xargs -- ls -ldF -- < "$file.conffiles"
                     result=$?
                     continue
+                elif eval [[ -s $file:*.conffiles ]]; then
+                    xargs -- ls -ldF -- < $file:*.conffiles
+                    result=$?
+                    continue
                 else
                     error "Package $PKG not installed or has no conffiles."
                 fi
                 ;;
 
             '-lsman')
-                if [[ -s $file.list ]]; then
+                if [[ -s $file.list ]] || eval [[ -s $file:*.list ]]; then
                     dlocate -L "$PKG" | grep -E '/man[0-9]+/'
                     result=$?
                     continue
@@ -579,7 +608,7 @@ else
                 ;;
 
             '-man')
-                if [[ -s $file.list ]]; then
+                if [[ -s $file.list ]] || eval [[ -s $file:*.list ]]; then
                     dlocate -lsman "$PKG" | \
                         sed 's:.*/::;s/[A-Za-z]*\.gz$//;s/\(^.*\)\.\(.*\)/\2 \1/' | \
                         sort
@@ -603,6 +632,18 @@ else
                             continue
                         fi
                     fi
+                elif eval [[ -s $file:*.md5sums ]]; then
+                    output=$(cd / && md5sum --check $file:*.md5sums 2>/dev/null)
+                    if [[ -n $output ]]; then
+                        output=$(grep -v ': OK' <<<"$output")
+                        if [[ -n $output ]]; then
+                            echo "$output"
+                        else
+                            echo "ALL OK"
+                            result=0
+                            continue
+                        fi
+                    fi
                 else
                     error "Package $PKG not installed or has no md5sums."
                 fi
@@ -611,6 +652,10 @@ else
             '-md5sum')
                 if [[ -s $file.md5sums ]]; then
                     cat "$file.md5sums"
+                    result=$?
+                    continue
+                elif eval [[ -s $file:*.md5sums ]]; then
+                    cat $file:*.md5sums
                     result=$?
                     continue
                 else
