@@ -30,7 +30,7 @@ _dlocate(){
         return 0
         ;;
 
-    -@(conf|du|f|l|L|ls|lsbin|lscmd|lsconf|man|md5check|md5sum|s))
+    -@(conf|du|f|l|L|ls|lsbin|lscmd|lsconf|lsman|man|md5check|md5sum|s))
         COMPREPLY=( $( _xfunc dpkg _comp_dpkg_installed_packages "$cur" ) )
         return 0
         ;;
