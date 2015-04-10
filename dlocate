@@ -408,10 +408,10 @@ elif [[ $OPTION = '-p' ]]; then
     fi
 
     PREFIX='^(diversion by )?'
-    POSTFIX='( (from|to))?: '
+    POSTFIX='(:.+)?( (from|to))?: '
 
     [[ $RE_TYPE = '-G' ]] && PREFIX='^\(diversion by \)\?' && \
-                             POSTFIX='\( \(from\|to\)\)\?: ' && \
+                             POSTFIX='\(:.\+\)\?\( \(from\|to\)\)\?: ' && \
                              FILES_REGEXP=$(sed 's/(/\\(/g;s/)/\\)/g' <<<"$FILES_REGEXP")
 
     # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"${PREFIX}${FILES_REGEXP}${POSTFIX}\" \"$DLOCATEDB\""
