@@ -273,7 +273,7 @@ parse "$@"
 if [[ $OPTION =~ ^(-e|-o)$ ]]; then
 
     # ensure we're not searching for multiple files or commands
-    if [[ ${#PKGS[@]} > 1 ]]; then
+    if (( ${#PKGS[@]} > 1 )); then
         fatal "'$OPTION' option only supports queries with one STRING"
     fi
 
