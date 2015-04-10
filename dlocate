@@ -270,9 +270,6 @@ parse "$@"
 # show help if package list is empty
 (( ${#PKGS[@]} == 0 )) && [[ ! $OPTION =~ ^-(k|K)$ ]] && dlocate_help
 
-# display execution environment details
-[[ $VERBOSE -eq 1 ]] && verbosity
-
 if [[ $OPTION =~ ^(-e|-o)$ ]]; then
 
     # ensure we're not searching for multiple files or commands
@@ -294,6 +291,9 @@ else
     [[ $WORD_RE = '-w' ]] && FILES_REGEXP="\b$FILES_REGEXP\b"
 
 fi
+
+# display execution environment details
+[[ $VERBOSE -eq 1 ]] && verbosity
 
 if [[ $OPTION = 'DEFAULT' ]]; then
 
