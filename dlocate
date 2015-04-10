@@ -133,11 +133,17 @@ output_filter(){
 
     case "$OUTPUT_FILTER" in
         'filenames')
-            local output=$(cut -d' ' -f2)
+            local output=$(awk '{ print $NF }')
             ;;
+
         'packages')
-            local output=$(cut -d: -f1)
+            # show only package names
+            local output=$(awk '{ if ($1=="diversion"){ print $3 } else { sub(": ", " "); print $1 } }')
+
+            # include diversion from/to string
+            # local output=$(sed 's/: [^ ]\+$//')
             ;;
+
         *)
             local output=$(cat)
             ;;
