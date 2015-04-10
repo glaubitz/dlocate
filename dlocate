@@ -277,7 +277,7 @@ if [[ $OPTION =~ ^(-e|-o)$ ]]; then
         fatal "'$OPTION' option only supports queries with one STRING"
     fi
 
-    SEARCH_STRING=${PKGS[0]}
+    FILES_REGEXP=${PKGS[0]}
 
 else
 
@@ -307,18 +307,28 @@ if [[ $OPTION = 'DEFAULT' ]]; then
 
     result=${PIPESTATUS[0]}
 
-elif [[ $OPTION = '-e' ]]; then
+elif [[ $OPTION = '-e' || $OPTION = '-o' ]]; then
 
     if [[ "$@" =~ (-E|-F|-G|-i|-P|-w|--fixed-strings|--ignore-case|--[a-z]+regexp) ]]; then
-        fatal "-e exact string searches are incompatible with regular expression options"
+        fatal "$OPTION exact command searches are incompatible with regular expression options"
     fi
 
-    PREFIX='(^[-a-zA-Z0-9_.+]+| (to|from)):'
+    if [[ $OPTION = '-o' ]]; then
+        SEARCH_STRING=$(type -P "$FILES_REGEXP")
+        if [[ -z $SEARCH_STRING ]]; then
+            fatal "'$FILES_REGEXP' does not appear to be a valid command on the PATH"
+        fi
+    else
+        SEARCH_STRING=$FILES_REGEXP
+    fi
 
-    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE -- \"$PREFIX ${FILES_REGEXP}$\" \"$DLOCATEDB\""
-    # $GREP $RE_TYPE -- "$PREFIX ${FILES_REGEXP}$" "$DLOCATEDB" | output_filter
+    # PREFIX='(^[-a-zA-Z0-9_.+]+| (to|from)):'
+    PREFIX=':'
 
-    COMMAND='$GREP $RE_TYPE -- "$PREFIX ${FILES_REGEXP}$" "$DLOCATEDB"'
+    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE -- \"$PREFIX ${SEARCH_STRING}$\" \"$DLOCATEDB\""
+    # $GREP $RE_TYPE -- "$PREFIX ${SEARCH_STRING}$" "$DLOCATEDB" | output_filter
+
+    COMMAND='$GREP $RE_TYPE -- "$PREFIX ${SEARCH_STRING}$" "$DLOCATEDB"'
 
     [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
     eval "$COMMAND" | output_filter
@@ -390,29 +400,6 @@ elif [[ $OPTION = '-l' ]]; then
 
 
     [[ -n $body ]] && echo -e "${header}\n${body}"
-
-elif [[ $OPTION = '-o' ]]; then
-
-    if [[ "$@" =~ (-E|-F|-G|-i|-P|-w|--fixed-strings|--ignore-case|--[a-z]+regexp) ]]; then
-        fatal "-o exact command searches are incompatible with regular expression options"
-    fi
-
-    PREFIX='(^[-a-zA-Z0-9_.+]+| (to|from)):'
-    FULLPATH=$(type -P "${SEARCH_STRING}")
-
-    if [[ -z $FULLPATH ]]; then
-        fatal "'${SEARCH_STRING}' does not appear to be a valid command on the PATH"
-    fi
-
-    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE -- \"$PREFIX ${FULLPATH}$\" \"$DLOCATEDB\""
-    # $GREP $RE_TYPE -- "$PREFIX ${FULLPATH}$" "$DLOCATEDB" | output_filter
-
-    COMMAND='$GREP $RE_TYPE -- "$PREFIX ${FULLPATH}$" "$DLOCATEDB"'
-
-    [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
-    eval "$COMMAND" | output_filter
-
-    result=${PIPESTATUS[0]}
 
 elif [[ $OPTION = '-p' ]]; then
 
