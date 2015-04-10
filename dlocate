@@ -448,15 +448,17 @@ elif [[ $OPTION = '-S' ]]; then
         fatal "-F Fixed String searches are incompatible with -S"
     fi
 
-    PREFIX='(^[-a-zA-Z0-9_.+]+| (to|from)):'
+    # PREFIX='(^[-a-zA-Z0-9_.+]+| (to|from)):'
+    PREFIX=':'
 
-    [[ $RE_TYPE = '-G' ]] && PREFIX='\(^[-a-zA-Z0-9_.+]\+\| \(to\|from\)\):' && \
-                             FILES_REGEXP=$(sed 's/(/\\(/g;s/)/\\)/g' <<<"$FILES_REGEXP")
+    # [[ $RE_TYPE = '-G' ]] && PREFIX='\(^[-a-zA-Z0-9_.+]\+\| \(to\|from\)\):' && \
+    #                          FILES_REGEXP=$(sed 's/(/\\(/g;s/)/\\)/g' <<<"$FILES_REGEXP")
+    [[ $RE_TYPE = '-G' ]] && FILES_REGEXP=$(sed 's/(/\\(/g;s/)/\\)/g' <<<"$FILES_REGEXP")
 
-    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"$PREFIX .*$FILES_REGEXP\" \"$DLOCATEDB\""
-    # $GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX .*$FILES_REGEXP" "$DLOCATEDB" | output_filter
+    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"$PREFIX $FILES_REGEXP\" \"$DLOCATEDB\""
+    # $GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX $FILES_REGEXP" "$DLOCATEDB" | output_filter
 
-    COMMAND='$GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX .*$FILES_REGEXP" "$DLOCATEDB"'
+    COMMAND='$GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX $FILES_REGEXP" "$DLOCATEDB"'
 
     [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
     eval "$COMMAND" | output_filter
