@@ -314,6 +314,7 @@ elif [[ $OPTION = '-e' || $OPTION = '-o' ]]; then
     fi
 
     if [[ $OPTION = '-o' ]]; then
+        # determine the path of an executable
         SEARCH_STRING=$(type -P "$FILES_REGEXP")
         if [[ -z $SEARCH_STRING ]]; then
             fatal "'$FILES_REGEXP' does not appear to be a valid command on the PATH"
