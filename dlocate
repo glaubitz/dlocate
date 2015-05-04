@@ -320,7 +320,8 @@ elif [[ $OPTION = '-e' || $OPTION = '-o' ]]; then
             fatal "'$FILES_REGEXP' does not appear to be a valid command on the PATH"
         fi
     else
-        SEARCH_STRING=$FILES_REGEXP
+        # determine the absolute path of a file
+        SEARCH_STRING=$(readlink -e "$FILES_REGEXP")
     fi
 
     # PREFIX='(^[-a-zA-Z0-9_.+]+| (to|from)):'
