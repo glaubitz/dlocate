@@ -312,9 +312,11 @@ if [[ $OPTION = 'DEFAULT' ]]; then
 
 elif [[ $OPTION = '-e' || $OPTION = '-o' ]]; then
 
-    if [[ "$@" =~ (-E|-F|-G|-i|-P|-w|--fixed-strings|--ignore-case|--[a-z]+regexp) ]]; then
-        fatal "$OPTION exact command searches are incompatible with regular expression options"
-    fi
+    for arg in "$@"; do
+        if [[ $arg =~ ^(-E|-F|-G|-i|-P|-w|--fixed-strings|--ignore-case|--[a-z]+regexp)$ ]]; then
+            fatal "$OPTION exact command searches are incompatible with regular expression options"
+        fi
+    done
 
     # determine the path of an executable
     if [[ $OPTION = '-o' ]]; then
