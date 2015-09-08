@@ -316,16 +316,18 @@ elif [[ $OPTION = '-e' || $OPTION = '-o' ]]; then
         fatal "$OPTION exact command searches are incompatible with regular expression options"
     fi
 
+    # determine the path of an executable
     if [[ $OPTION = '-o' ]]; then
-        # determine the path of an executable
-        SEARCH_STRING=$(type -P "$FILES_REGEXP")
-        if [[ -z $SEARCH_STRING ]]; then
+        temp_path=$(type -P "$FILES_REGEXP")
+        if [[ -n $temp_path ]]; then
+            FILES_REGEXP=$temp_path
+        else
             fatal "'$FILES_REGEXP' does not appear to be a valid command on the PATH"
         fi
-    else
-        # determine the absolute path of a file
-        SEARCH_STRING=$(readlink -e "$FILES_REGEXP")
     fi
+
+    # determine the absolute path of a file
+    SEARCH_STRING=$(readlink -e "$FILES_REGEXP")
 
     # PREFIX='(^[-a-zA-Z0-9_.+]+| (to|from)):'
     PREFIX=':'
