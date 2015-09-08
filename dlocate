@@ -15,6 +15,7 @@
 
 
 config(){
+    PROGRAM=${0##*/}
     VERSION='1.1'
 
     DLOCATEDB=/var/lib/dlocate/dlocatedb
@@ -47,74 +48,76 @@ config(){
 }
 
 dlocate_help(){
-    cat <<__EOF__
-Usage: dlocate [option...] [command] [PATTERN...]
+    cat <<-__EOF__
+	Usage: $PROGRAM [option...] [command] [PATTERN...]
 
-Commands:
-  DEFAULT/none PATTERN   list records that match either package or files names
-  -p           PATTERN   list records that match packages
-  -S           PATTERN   list records that match filenames
-  -e           STRING    list package that file belongs to
-  -o           COMMAND   list package that command belongs to
+	Commands:
+	  DEFAULT/none PATTERN   list records that match either package or files names
+	  -p           PATTERN   list records that match packages
+	  -S           PATTERN   list records that match filenames
+	  -e           STRING    list package that file belongs to
+	  -o           COMMAND   list package that command belongs to
 
-  -f           package   list all files in package
-  -L           package   list all contents of package
-  -l           package   regexp-enhanced emulation of 'dpkg -l'
-  -s           package   print package's status
-  -ls          package   'ls -ldF' of all package contents
-  -du          package   'du -sck' of all package contents
-  -conf        package   list conffiles in package
-  -lsconf      package   'ls -ldF' of conffiles in package
-  -md5sum      package   list package's md5sums (if any)
-  -md5check    package   check package's md5sums (if any)
-  -man         package   list package's man pages (if any)
-  -lsman       package   list full paths of man pages
-  -lsbin       package   list full paths of executable files
-  -lscmd       package   list names of executable files on PATH
-  -k                     list installed kernel & related packages
-  -K                     detailed list of installed kernel & related packages
+	  -f           package   list all files in package
+	  -L           package   list all contents of package
+	  -l           package   regexp-enhanced emulation of 'dpkg -l'
+	  -s           package   print package's status
+	  -ls          package   'ls -ldF' of all package contents
+	  -du          package   'du -sck' of all package contents
+	  -conf        package   list conffiles in package
+	  -lsconf      package   'ls -ldF' of conffiles in package
+	  -md5sum      package   list package's md5sums (if any)
+	  -md5check    package   check package's md5sums (if any)
+	  -man         package   list package's man pages (if any)
+	  -lsman       package   list full paths of man pages
+	  -lsbin       package   list full paths of executable files
+	  -lscmd       package   list names of executable files on PATH
+	  -k                     list installed kernel & related packages
+	  -K                     detailed list of installed kernel & related packages
 
-  --                    stop processing commands and options.  remainder of
-                        command-line is filename(s)
+	  --                    stop processing commands and options.  remainder of
+	                        command-line is filename(s)
 
 
-The -l, and -S commands are approximately the same as the equivalent dpkg
-options except that the search is performed using regular expressions
-rather than fixed strings.
+	The -l, and -S commands are approximately the same as the equivalent dpkg
+	options except that the search is performed using regular expressions
+	rather than fixed strings.
 
-Options
+	Options
 
-  --filename-only        only output file names when searching for files
-  --package-only         only output package names when searching for files
+	  --filename-only        only output file names when searching for files
+	  --package-only         only output package names when searching for files
 
-Regular Expression Options (see grep(1) for details):
+	Regular Expression Options (see grep(1) for details):
 
-  -E, --extended-regexp
-  -F, --fixed-strings
-  -G, --basic-regexp
-  -P, --perl-regexp
+	  -E, --extended-regexp
+	  -F, --fixed-strings
+	  -G, --basic-regexp
+	  -P, --perl-regexp
 
-  -w, --word-regexp     restrict matches to whole words
-  -i, --ignore-case     case-insensitive match
+	  -w, --word-regexp     restrict matches to whole words
+	  -i, --ignore-case     case-insensitive match
 
-Miscellaneous Options:
+	Miscellaneous Options:
 
-  -h, -H, --help          display this help message and exit.
-  -V, --version           display dlocate's version number and exit.
-  -v, --verbose, --debug  verbose/debug output
-__EOF__
+	  -h, -H, --help          display this help message and exit.
+	  -V, --version           display dlocate's version number and exit.
+	  -v, --verbose, --debug  verbose/debug output
+	__EOF__
     exit 0
 }
 
 dlocate_error(){
-    echo "dlocate: unknown option '$1'" >&2
-    echo >&2
-    echo "Use: 'dlocate -- $1' if you want to search for '$1'" >&2
+    cat <<-__EOF__ >&2
+	$PROGRAM: unknown option '$1'
+
+	Use: '$PROGRAM -- $1' if you want to search for '$1'
+	__EOF__
     exit 1
 }
 
 dlocate_version(){
-    echo "dlocate $VERSION"
+    echo "$PROGRAM $VERSION"
     exit 0
 }
 
@@ -249,16 +252,16 @@ running(){
 }
 
 verbosity(){
-cat <<__EOF__
-------------------------------
-[EXECUTION ENVIRONMENT]
-PKGS: ${PKGS[@]}
-RE_SEPARATOR: $RE_SEPARATOR
-FILES_REGEXP: $FILES_REGEXP
-PKGS_REGEXP: $PKGS_REGEXP
-OPTION: $OPTION
-------------------------------
-__EOF__
+    cat <<-__EOF__
+	------------------------------
+	[EXECUTION ENVIRONMENT]
+	PKGS: ${PKGS[@]}
+	RE_SEPARATOR: $RE_SEPARATOR
+	FILES_REGEXP: $FILES_REGEXP
+	PKGS_REGEXP: $PKGS_REGEXP
+	OPTION: $OPTION
+	------------------------------
+	__EOF__
 }
 
 # load configuration defaults
