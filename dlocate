@@ -122,11 +122,11 @@ dlocate_version(){
 }
 
 error(){
-    echo "ERROR: $@" >&2
+    echo "ERROR: $*" >&2
 }
 
 fatal(){
-    error "$@"
+    error "$*"
     echo >&2
     exit 1
 }
@@ -248,7 +248,7 @@ parse(){
 }
 
 running(){
-    echo "RUNNING: $@"
+    echo "RUNNING: $*"
 }
 
 verbosity(){
