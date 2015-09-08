@@ -70,7 +70,7 @@ Commands:
   -man         package   list package's man pages (if any)
   -lsman       package   list full paths of man pages
   -lsbin       package   list full paths of executable files
-  -lscmd       package   list full paths of executable files on PATH
+  -lscmd       package   list names of executable files on PATH
   -k                     list installed kernel & related packages
   -K                     detailed list of installed kernel & related packages
 
@@ -561,9 +561,9 @@ else
                     while IFS= read -r path; do
                         dirpath=$(dirname "$path")
                         if [[ -n $dirpath ]] && grep -Eq "(^|:)$dirpath($|:)" <<<"$PATH"; then
-                            echo "$path"
+                            echo "${path##*/}"
                         fi
-                    done < <(dlocate -lsbin "$PKG")
+                    done < <(dlocate -lsbin "$PKG") | sort
                     result=$?
                     continue
                 else
