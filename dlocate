@@ -638,7 +638,7 @@ else
 
         esac
 
-        # NOTE: this point is only reachable upon failure
+        # this point is only reachable upon failure
         result=1
 
     done
