@@ -506,8 +506,10 @@ else
 
             '-du')
                 if [[ -s $file.list ]]; then
-                    filelist=$(grep -Ev '(@|/)$' <(xargs -r -- ls -1dF -- < "$file.list"))
-                    [[ -n $filelist ]] && du -cks $filelist
+                    (
+                        set -o pipefail
+                        xargs -a "$file.list" -r -- ls -1dF | grep -Ev '(@|/)$' | sed 's/[*=>|]$//' | xargs -d '\n' -r -- du -cks
+                    )
                     result=$?
                     continue
                 else
