@@ -479,7 +479,7 @@ else
     for PKG in "${PKGS[@]}"; do
 
         search_string=$(sed 's/+/\\+/g' <<<"$PKG")
-        readarray -t packages < <(find "$DPKG_INFO" -regextype posix-extended -regex "$DPKG_INFO/${search_string}(:[^.]+)?\..+" | sed 's/\.[^\.]*$//' | sort -u)
+        readarray -t packages < <(find "$DPKG_INFO" -regextype posix-extended -regex "$DPKG_INFO/${search_string}(:[^.]+)?\.[^.]+" | sed 's/\.[^\.]*$//' | sort -u)
         if (( ${#packages[@]} == 0 )); then
             error "Package $PKG not installed or has no files in $DPKG_INFO."
             result=1
