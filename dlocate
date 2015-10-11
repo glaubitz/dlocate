@@ -555,7 +555,7 @@ else
                         if [[ -f $path && -x $path ]]; then
                             echo "$path"
                         fi
-                    done < <(dlocate -L "$PKG")
+                    done < <(dlocate -L "$PKG") | sort
                     result=$?
                     continue
                 else
