@@ -3,48 +3,59 @@
 # Debian GNU dlocate(1) completion
 
 
+# ensure bash-completion is installed
+[[ $(dpkg-query --show --showformat="\${Status}" 'bash-completion' 2>/dev/null) != 'install ok installed' ]] && return 0
+
+_have dlocate && {
+
 _executables(){
     echo -n "$PATH" | xargs -d: -I{} -- find -L {} -maxdepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u
 }
 
-_have dlocate && {
-
-_dlocate(){
+__dlocate(){
     local cur prev
 
     COMPREPLY=()
     cur=${COMP_WORDS[COMP_CWORD]}
     prev=${COMP_WORDS[COMP_CWORD-1]}
 
+    if [[ $cur = -* ]]; then
+        local options
+        options=(--basic-regexp -conf --debug -du -e -E --extended-regexp
+                 -f -F --filename-only --fixed-strings -G -h -H --help -i
+                 --ignore-case -k -K -l -L -ls -lsbin -lscmd -lsconf -lsman
+                 -man -md5check -md5sum -o -p -P --package-only --perl-regexp
+                 -s -S -v -V --verbose --version -w --word-regexp)
+        readarray -t COMPREPLY < <(compgen -W "${options[*]}" -- "$cur")
+        return 0
+    fi
+
     case $prev in
 
-    -o)
-        COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
-        return 0
-        ;;
+        -o)
+            readarray -t COMPREPLY < <(compgen -W "$(_executables)" -- "$cur")
+            return 0
+            ;;
 
-    -@(e|S))
-        _filedir
-        return 0
-        ;;
+        -@(e|S))
+            _filedir
+            return 0
+            ;;
 
-    -@(conf|du|f|l|L|ls|lsbin|lscmd|lsconf|lsman|man|md5check|md5sum|s))
-        COMPREPLY=( $( _xfunc dpkg _comp_dpkg_installed_packages "$cur" ) )
-        return 0
-        ;;
+        -@(conf|du|f|l|L|ls|lsbin|lscmd|lsconf|lsman|man|md5check|md5sum|s))
+            readarray -t COMPREPLY < <(_xfunc dpkg _comp_dpkg_installed_packages "$cur")
+            return 0
+            ;;
 
-    *)
-        optionlist='-conf -d --debug -du -e -f --filename-only -h -H --help -k\
-                   -K -l -L -ls -lsbin -lscmd -lsconf -lsman -man -md5check\
-                   -md5sum -o -p --package-only -s -S -v -V --verbose --version'
-        COMPREPLY=( $( compgen -W "$optionlist" -- "$cur" ) )
-        return 0
-        ;;
+        *)
+            _filedir
+            return 0
+            ;;
 
     esac
 
 }
 
-complete -F _dlocate $filenames dlocate
+complete -F __dlocate dlocate
 
 }
