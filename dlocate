@@ -570,7 +570,7 @@ else
                         if [[ -n $dirpath ]] && grep -Eq "(^|:)$dirpath($|:)" <<<"$PATH"; then
                             echo "${path##*/}"
                         fi
-                    done < <(dlocate -lsbin "$PKG") | sort
+                    done < <(dlocate -lsbin "$PKG") | sort -u
                     result=$?
                     continue
                 else
