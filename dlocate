@@ -141,7 +141,7 @@ output_filter(){
 
         'packages')
             # show only package names
-            local output=$(awk '{ if ($1=="diversion"){ print $3 } else { sub(": ", " "); print $1 } }')
+            local output=$(awk '{ if ($1=="diversion"){ print $3 } else { sub(":.*$", ""); print } }')
 
             # include diversion from/to string
             # local output=$(sed 's/: [^ ]\+$//')
