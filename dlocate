@@ -423,10 +423,10 @@ elif [[ $OPTION = '-p' ]]; then
                              POSTFIX='\(:.\+\)\?\( \(from\|to\)\)\?: ' && \
                              FILES_REGEXP=$(sed 's/(/\\(/g;s/)/\\)/g' <<<"$FILES_REGEXP")
 
-    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"${PREFIX}${FILES_REGEXP}${POSTFIX}\" \"$DLOCATEDB\""
-    # $GREP $RE_TYPE $IGNORE_CASE -- "${PREFIX}${FILES_REGEXP}${POSTFIX}" "$DLOCATEDB" | output_filter
+    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"${PREFIX}.*${FILES_REGEXP}.*${POSTFIX}\" \"$DLOCATEDB\""
+    # $GREP $RE_TYPE $IGNORE_CASE -- "${PREFIX}.*${FILES_REGEXP}.*${POSTFIX}" "$DLOCATEDB" | output_filter
 
-    COMMAND='$GREP $RE_TYPE $IGNORE_CASE -- "${PREFIX}${FILES_REGEXP}${POSTFIX}" "$DLOCATEDB"'
+    COMMAND='$GREP $RE_TYPE $IGNORE_CASE -- "${PREFIX}.*${FILES_REGEXP}.*${POSTFIX}" "$DLOCATEDB"'
 
     [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
     eval "$COMMAND" | output_filter
@@ -464,10 +464,10 @@ elif [[ $OPTION = '-S' ]]; then
     #                          FILES_REGEXP=$(sed 's/(/\\(/g;s/)/\\)/g' <<<"$FILES_REGEXP")
     [[ $RE_TYPE = '-G' ]] && FILES_REGEXP=$(sed 's/(/\\(/g;s/)/\\)/g' <<<"$FILES_REGEXP")
 
-    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"$PREFIX $FILES_REGEXP\" \"$DLOCATEDB\""
-    # $GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX $FILES_REGEXP" "$DLOCATEDB" | output_filter
+    # [[ $VERBOSE -eq 1 ]] && running "$GREP $RE_TYPE $IGNORE_CASE -- \"$PREFIX .*$FILES_REGEXP\" \"$DLOCATEDB\""
+    # $GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX .*$FILES_REGEXP" "$DLOCATEDB" | output_filter
 
-    COMMAND='$GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX $FILES_REGEXP" "$DLOCATEDB"'
+    COMMAND='$GREP $RE_TYPE $IGNORE_CASE -- "$PREFIX .*$FILES_REGEXP" "$DLOCATEDB"'
 
     [[ $VERBOSE -eq 1 ]] &&  eval running "$COMMAND"
     eval "$COMMAND" | output_filter
